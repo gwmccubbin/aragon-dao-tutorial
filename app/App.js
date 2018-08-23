@@ -20,6 +20,7 @@ export default class App extends React.Component {
     return (
       <AppContainer>
         <div>
+          <ObservedBallot  observable={this.props.observable} />
           <ObservedCount observable={this.props.observable} />
           <Button onClick={() => this.props.app.decrement(1)}>Decrement</Button>
           <Button onClick={() => this.props.app.increment(1)}>Increment</Button>
@@ -28,6 +29,13 @@ export default class App extends React.Component {
     )
   }
 }
+
+const ObservedBallot = observe(
+  (state$) => state$,
+  { ballotName: 'Should this vote pass?' }
+)(
+  ({ ballotName }) => <Text.Block style={{ textAlign: 'center' }} size='xxlarge'>{ballotName}</Text.Block>
+)
 
 const ObservedCount = observe(
   (state$) => state$,

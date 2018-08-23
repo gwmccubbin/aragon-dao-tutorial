@@ -12,6 +12,7 @@ contract CounterApp is AragonApp {
 
     /// State
     uint256 public value;
+    string public ballotName = 'Should this vote pass?';
 
     /// ACL
     bytes32 constant public INCREMENT_ROLE = keccak256("INCREMENT_ROLE");
