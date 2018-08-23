@@ -42,5 +42,5 @@ const ObservedCount = observe(
   (state$) => state$,
   { count: 0 }
 )(
-  ({ count }) => <div style={{ margin: '20px' }}><CircleGraph value={count/10} /></div>
+  ({ count }) => <div style={{ margin: '20px' }}><CircleGraph value={count/3} /></div>
 )
