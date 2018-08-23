@@ -33,7 +33,7 @@ export default class App extends React.Component {
 
 const ObservedBallot = observe(
   (state$) => state$,
-  { ballotName: 'Should this vote pass?' }
+  { ballotName: 'Should We Mint Tokens?' }
 )(
   ({ ballotName }) => <Text.Block style={{ textAlign: 'center' }} size='xxlarge'>{ballotName}</Text.Block>
 )

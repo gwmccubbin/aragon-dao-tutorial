@@ -13,6 +13,8 @@ app.store(async (state, event) => {
       return { count: await getValue() }
     case 'Decrement':
       return { count: await getValue() }
+    case 'NewVote':
+      return { count: await getValue() }
     default:
       return state
   }

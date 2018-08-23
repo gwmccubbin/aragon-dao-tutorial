@@ -74,10 +74,12 @@ contract Kit is KitBase {
         tokenManager.mint(root, 1); // Give one token to root
 
         acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
+        acl.createPermission(ANY_ENTITY, app, app.CREATE_VOTES_ROLE(), root);
 
-        acl.createPermission(voting, app, app.INCREMENT_ROLE(), voting);
+        acl.createPermission(ANY_ENTITY, app, app.INCREMENT_ROLE(), root);
         acl.createPermission(ANY_ENTITY, app, app.DECREMENT_ROLE(), root);
-        acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());
+        // acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());
+        acl.grantPermission(app, tokenManager, tokenManager.MINT_ROLE());
 
         // Clean up permissions
         acl.grantPermission(root, dao, dao.APP_MANAGER_ROLE());

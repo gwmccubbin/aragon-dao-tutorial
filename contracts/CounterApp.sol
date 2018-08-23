@@ -2,6 +2,7 @@ pragma solidity 0.4.18;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/zeppelin/math/SafeMath.sol";
+import "@aragon/os/contracts/common/IForwarder.sol";
 
 contract CounterApp is AragonApp {
     using SafeMath for uint256;
@@ -9,14 +10,45 @@ contract CounterApp is AragonApp {
     /// Events
     event Increment(address indexed entity, uint256 step);
     event Decrement(address indexed entity, uint256 step);
+    event NewVote(address indexed entity);
 
     /// State
     uint256 public value;
-    string public ballotName = 'Should this vote pass?';
+    bytes executionScript;
 
     /// ACL
     bytes32 constant public INCREMENT_ROLE = keccak256("INCREMENT_ROLE");
     bytes32 constant public DECREMENT_ROLE = keccak256("DECREMENT_ROLE");
+    bytes32 constant public CREATE_VOTES_ROLE = keccak256("CREATE_VOTES_ROLE");
+
+    function isForwarder() public pure returns (bool) {
+        return true;
+    }
+
+    /**
+    * @notice Creates a vote to execute the desired action, and casts a support vote
+    * @dev IForwarder interface conformance
+    * @param _evmScript Start vote with script
+    */
+    function forward(bytes _evmScript) public {
+        require(canForward(msg.sender, _evmScript));
+        _newVote(_evmScript);
+    }
+
+    function canForward(address _sender, bytes _evmCallScript) public view returns (bool) {
+        return canPerform(_sender, CREATE_VOTES_ROLE, arr());
+    }
+
+    function _newVote(bytes _executionScript) internal returns (bool) {
+        executionScript = _executionScript;
+
+        // Reset the count
+        value = 0;
+
+        NewVote(msg.sender);
+
+        return true;
+    }
 
     /**
      * @notice Increment the counter by `step`
