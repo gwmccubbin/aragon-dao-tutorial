@@ -11,9 +11,11 @@ contract CounterApp is AragonApp {
     event Increment(address indexed entity, uint256 step);
     event Decrement(address indexed entity, uint256 step);
     event NewVote(address indexed entity);
+    event ExecuteVote();
 
     /// State
     uint256 public value;
+    uint256 public goal = 10;
     bytes executionScript;
 
     /// ACL
@@ -42,8 +44,7 @@ contract CounterApp is AragonApp {
     function _newVote(bytes _executionScript) internal returns (bool) {
         executionScript = _executionScript;
 
-        // Reset the count
-        value = 0;
+        value = 0; // Reset the count
 
         NewVote(msg.sender);
 
@@ -57,6 +58,16 @@ contract CounterApp is AragonApp {
     function increment(uint256 step) auth(INCREMENT_ROLE) external {
         value = value.add(step);
         Increment(msg.sender, step);
+
+        if(value >= goal) {
+            _executeVote();
+        }
+    }
+
+    function _executeVote() internal {
+        bytes memory input = new bytes(0);
+        runScript(executionScript, input, new address[](0));
+        ExecuteVote();
     }
 
     /**
